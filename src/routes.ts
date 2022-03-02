@@ -19,8 +19,8 @@ protectedRouter.delete("/users/:id", UserController.deleteUser);
 
 // articles 相关的路由
 protectedRouter.get("/articles", ArticleController.listArticles);
-// protectedRouter.get("/users/:id", UserController.showUserDetail);
+protectedRouter.get("/articles/:id", ArticleController.showArticleDetail);
 // protectedRouter.put("/users/:id", UserController.updateUser);
-// protectedRouter.delete("/users/:id", UserController.deleteUser);
+protectedRouter.delete("/users/:id", ArticleController.deleteArticle);
 
 export { protectedRouter, unprotectedRouter };
