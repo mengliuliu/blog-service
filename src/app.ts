@@ -22,7 +22,7 @@ createConnection()
     // let articleRepository = connection.getRepository(Article);
 
     // await articleRepository.save(article);
-    // console.log("Article has been saved");
+    // console.log("Article has been saved")
 
     const app = new Koa();
 

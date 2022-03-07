@@ -21,6 +21,6 @@ protectedRouter.delete("/users/:id", UserController.deleteUser);
 protectedRouter.get("/articles", ArticleController.listArticles);
 protectedRouter.get("/articles/:id", ArticleController.showArticleDetail);
 // protectedRouter.put("/users/:id", UserController.updateUser);
-protectedRouter.delete("/users/:id", ArticleController.deleteArticle);
+protectedRouter.delete("/articles/:id", ArticleController.deleteArticle);
 
 export { protectedRouter, unprotectedRouter };

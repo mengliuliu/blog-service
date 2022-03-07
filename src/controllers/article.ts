@@ -5,15 +5,14 @@ import { NotFoundException, ForbiddenException } from "../exceptions";
 
 export default class ArticleController {
   public static async listArticles(ctx: any) {
-    console.log("ctx", ctx);
+    // console.log("ctx", ctx);
     const articleRepository = getManager().getRepository(Article);
     const articles = await articleRepository.find();
 
     ctx.status = 200;
     ctx.body = articles;
 
-    console.log("ctx", ctx);
-
+    // console.log("ctx", ctx);
   }
 
   public static async showArticleDetail(ctx: any) {
@@ -59,5 +58,7 @@ export default class ArticleController {
     await articleRepository.delete(+ctx.params.id);
 
     ctx.status = 204;
+
+    console.log("delete ctx", ctx);
   }
 }
