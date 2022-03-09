@@ -3,5 +3,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     // "allowJs": true
+    "outDir": "./dist", // 编译后的输出目录
+    "rootDir": "./", // 参与编译的根目录,
+    "target": "ES6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true
   }
 }
