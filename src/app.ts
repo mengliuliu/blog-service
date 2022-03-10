@@ -26,6 +26,21 @@ createConnection()
 
     const app = new Koa();
 
+    // 解决跨域
+    app.use(async (ctx, next) => {
+      // 开发环境设置，生产环境谨慎使用
+      ctx.set("Access-Control-Allow-Origin", "*");
+      ctx.set("Access-Control-Allow-Headers", "X-Requested-With");
+      ctx.set("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+
+      if (ctx.method == "OPTIONS") {
+        ctx.body = "";
+        ctx.status = 200;
+      } else {
+        await next();
+      }
+    });
+
     app.use(bodyParser());
 
     // 无需 JWT Token 即可访问
