@@ -15,7 +15,7 @@ export default class AuthController {
 
     const user = await userRepository
       .createQueryBuilder()
-      .where({ name: ctx.request.body.name })
+      .where({ email: ctx.request.body.email })
       .addSelect("User.password")
       .getOne();
 
@@ -36,9 +36,7 @@ export default class AuthController {
     const userRepository = getManager().getRepository(User);
 
     const newUser = new User();
-    newUser.name = ctx.request.body.name;
     newUser.email = ctx.request.body.email;
-    console.log(ctx.request.body);
     newUser.password = await argon2.hash(ctx.request.body.password);
 
     // 保存到数据库

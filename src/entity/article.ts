@@ -18,6 +18,12 @@ export class Article {
   createTime: Date;
 
   @Column({
+    type: "boolean",
+    default: false,
+  })
+  is_delete: boolean;
+
+  @Column({
     type: "int",
     default: 0,
   })

@@ -18,9 +18,12 @@ protectedRouter.put("/users/:id", UserController.updateUser);
 protectedRouter.delete("/users/:id", UserController.deleteUser);
 
 // articles 相关的路由
-protectedRouter.get("/articles", ArticleController.listArticles);
+protectedRouter.post("/articles", ArticleController.listArticles);
 protectedRouter.get("/articles/:id", ArticleController.showArticleDetail);
 // protectedRouter.put("/users/:id", UserController.updateUser);
-protectedRouter.delete("/articles/:id", ArticleController.deleteArticle);
+// protectedRouter.delete("/articles/:id", ArticleController.deleteArticle);
+protectedRouter.post("/createArticle", ArticleController.createArticle);
+protectedRouter.post("/deleteArticle", ArticleController.deleteArticle);
+protectedRouter.post("/updateArticle", ArticleController.updateArticle);
 
 export { protectedRouter, unprotectedRouter };

@@ -5,10 +5,14 @@ import { NotFoundException, ForbiddenException } from "../exceptions";
 
 export default class ArticleController {
   public static async listArticles(ctx: any) {
-    // console.log("ctx", ctx);
     const articleRepository = getManager().getRepository(Article);
-    const articles = await articleRepository.find();
-
+    // 判断是否有 all 参数（方便在后台管理系统中查看全部）
+    const isAll = ctx.request.body.all;
+    let searchConditon = {};
+    if (!isAll) {
+      searchConditon = { is_delete: false };
+    }
+    const articles = await articleRepository.find(searchConditon);
     ctx.status = 200;
     ctx.body = articles;
 
@@ -27,37 +31,60 @@ export default class ArticleController {
     }
   }
 
-  //   public static async updateUser(ctx: any) {
-  //     const userId = +ctx.params.id;
-  //     if (userId !== +ctx.state.user.id) {
-  //       throw new ForbiddenException();
-  //       return;
-  //     }
+  public static async createArticle(ctx: any) {
+    const articleRepository = getManager().getRepository(Article);
 
-  //     const articleRepository = getManager().getRepository(User);
-  //     await articleRepository.update(+ctx.params.id, ctx.request.body);
-  //     const updatedUser = await articleRepository.findOne(+ctx.params.id);
+    const newArticle = new Article();
+    newArticle.title = ctx.request.body.title;
+    newArticle.content = ctx.request.body.content;
+    newArticle.createTime = ctx.request.body.createTime;
 
-  //     if (updatedUser) {
-  //       ctx.status = 200;
-  //       ctx.body = updatedUser;
-  //     } else {
-  //       ctx.status = 404;
-  //     }
-  //   }
+    // 保存到数据库
+    const article = await articleRepository.save(newArticle);
 
-  public static async deleteArticle(ctx: any) {
-    const articleId = +ctx.params.id;
+    ctx.status = 200;
+    ctx.body = article;
+  }
 
-    if (articleId !== +ctx.state.article.id) {
-      throw new ForbiddenException();
-      return;
-    }
+  public static async updateArticle(ctx: any) {
+    // const userId = +ctx.params.id;
+    // if (userId !== +ctx.state.user.id) {
+    //   throw new ForbiddenException();
+    //   return;
+    // }
+    const body = ctx.request.body;
 
     const articleRepository = getManager().getRepository(Article);
-    await articleRepository.delete(+ctx.params.id);
+    await articleRepository.update(+body.id, body);
+    const updatedUser = await articleRepository.findOne(+body.id);
 
-    ctx.status = 204;
+    if (updatedUser) {
+      ctx.status = 200;
+      ctx.body = updatedUser;
+    } else {
+      ctx.status = 404;
+    }
+  }
+
+  public static async deleteArticle(ctx: any) {
+    const articleRepository = getManager().getRepository(Article);
+    const articleId = +ctx.request.body.id;
+
+    const article = await articleRepository.findOne(articleId);
+    const changeArticle = {
+      ...article,
+      is_delete: true,
+    };
+    // console.log("articleId", articleId);
+    // console.log("changeArticle", changeArticle);
+    await articleRepository.update(articleId, changeArticle);
+    // article.is_delete = true;
+    // if (articleId !== +ctx.state.article.id) {
+    //   throw new ForbiddenException();
+    // }
+    // await articleRepository.delete(+ctx.params.id);
+
+    ctx.status = 200;
 
     console.log("delete ctx", ctx);
   }

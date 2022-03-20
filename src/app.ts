@@ -18,9 +18,7 @@ createConnection()
     // article.view_count = 0;
     // article.like_count = 1;
     // article.comment_count = 2;
-
     // let articleRepository = connection.getRepository(Article);
-
     // await articleRepository.save(article);
     // console.log("Article has been saved")
 
