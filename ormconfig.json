@@ -6,8 +6,8 @@
   "password": "root1234",
   "database": "blog",
   "synchronize": true,
-  "entities": ["dist/src/entity/*.js"],
+  "entities": ["./src/entity/*.ts"],
   "cli": {
-    "entitiesDir": "dist/src/entity"
+    "entitiesDir": "./src/entity"
   }
 }

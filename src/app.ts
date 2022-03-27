@@ -4,6 +4,8 @@ const jwt = require("koa-jwt");
 const bodyParser = require("koa-bodyparser");
 const { createConnection } = require("typeorm");
 import { protectedRouter, unprotectedRouter } from "./routes";
+import catchError from "./middlewares/catchError";
+import errorHandler from "./utils/errorHandler";
 import { JWT_SECRET } from "./constants";
 import { Article } from "./entity/article";
 import "reflect-metadata";
@@ -23,6 +25,9 @@ createConnection()
     // console.log("Article has been saved")
 
     const app = new Koa();
+
+    // 捕获错误
+    app.use(catchError);
 
     // 解决跨域
     app.use(async (ctx, next) => {
@@ -45,10 +50,13 @@ createConnection()
     app.use(unprotectedRouter.routes()).use(unprotectedRouter.allowedMethods());
 
     // 注册 JWT 中间件
-    app.use(jwt({ secret: JWT_SECRET }).unless({ method: "GET" }));
+    // app.use(jwt({ secret: JWT_SECRET }).unless({ method: "GET" }));
 
     // 需要 JWT Token 才可访问
     app.use(protectedRouter.routes()).use(protectedRouter.allowedMethods());
+
+    // 错误监听器
+    app.on("error", errorHandler);
 
     // 在端口3000监听:
     app.listen(3000);

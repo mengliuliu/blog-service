@@ -10,17 +10,13 @@ import { JWT_SECRET } from "../constants";
 export default class AuthController {
   public static async login(ctx: any) {
     const userRepository = getManager().getRepository(User);
-
-
-
     const user = await userRepository
       .createQueryBuilder()
       .where({ email: ctx.request.body.email })
       .addSelect("User.password")
       .getOne();
 
-
-      console.log(user.password, ctx.request.body.password)
+    // console.log(user.password, ctx.request.body.password);
 
     if (!user) {
       throw new UnauthorizedException("用户名不存在");
@@ -28,7 +24,9 @@ export default class AuthController {
       ctx.status = 200;
       ctx.body = { token: jwt.sign({ id: user.id }, JWT_SECRET) };
     } else {
-      throw new UnauthorizedException("密码错误");
+      const err = new UnauthorizedException("密码错误");
+      // ctx.body = err;
+      throw err;
     }
   }
 
