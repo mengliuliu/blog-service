@@ -1,22 +1,62 @@
 // src/controllers/user.ts
-import { getManager } from "typeorm";
-import { Article } from "../entity/article";
-import { NotFoundException, ForbiddenException } from "../exceptions";
+import { getManager } from 'typeorm';
+import { Article } from '../entity/article';
+import { NotFoundException, ForbiddenException } from '../exceptions';
 
 export default class ArticleController {
   public static async listArticles(ctx: any) {
     const articleRepository = getManager().getRepository(Article);
     // 判断是否有 all 参数（方便在后台管理系统中查看全部）
-    const isAll = ctx.request.body.all;
-    let searchConditon = {};
+    const reqBody = ctx.request.body;
+    const isAll: boolean = reqBody.all;
+    const pageNum: number = reqBody.pageNum;
+    const pageSize: number = reqBody.pageSize;
+    let searchConditon: any = {};
     if (!isAll) {
-      searchConditon = { is_delete: false };
+      searchConditon.is_delete = false;
     }
-    const articles = await articleRepository.find(searchConditon);
-    ctx.status = 200;
-    ctx.body = articles;
 
-    // console.log("ctx", ctx);
+    const articles: any[] = await articleRepository.find(searchConditon);
+    const length = articles.length;
+
+    var resArticles: any[] = [];
+    if (pageNum) {
+      let start: number = (pageNum - 1) * pageSize;
+      let end: number = pageNum * pageSize;
+      articles.forEach((item, index) => {
+        if (index >= start && index < end) {
+          resArticles.push(item);
+        }
+      });
+    } else {
+      resArticles = [...articles];
+    }
+
+    // const length = await (
+    //   await articleRepository.find({ is_delete: false })
+    // ).length;
+
+    // if (pageNum) {
+    //   searchConditon.skip = (pageNum - 1) * pageSize;
+    //   searchConditon.take = pageSize;
+    // }
+    // console.log('searchConditon', searchConditon);
+    // const articles = await (
+    //   await articleRepository.find(searchConditon)
+    // ).filter((article) => {
+    //   return article.is_delete === false;
+    // });
+    // .createQueryBuilder('articles')
+    // .where(searchConditon)
+    // .skip((pageNum - 1) * pageSize)
+    // .take(pageSize)
+    // .getMany();
+
+    ctx.status = 200;
+    ctx.body = {
+      list: resArticles,
+      total: length,
+    };
   }
 
   public static async showArticleDetail(ctx: any) {
@@ -86,6 +126,6 @@ export default class ArticleController {
 
     ctx.status = 200;
 
-    console.log("delete ctx", ctx);
+    console.log('delete ctx', ctx);
   }
 }
